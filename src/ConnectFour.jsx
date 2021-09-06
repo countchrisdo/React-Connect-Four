@@ -23,6 +23,9 @@ const winTypes = {
   backwardsDiagonal: 3
 };
 
+let redScore = 0,
+  blackScore = 0;
+
 export default function ConnectFour() {
   const [board, setBoard] = useState(createBoard());
   const [currentPlayer, setCurrentPlayer] = useState(getFirstPlayerTurn());
@@ -62,9 +65,21 @@ export default function ConnectFour() {
   }
 
   function restartGame() {
+    getScore();
     setCurrentPlayer(getFirstPlayerTurn());
     setWin(null);
     setBoard(createBoard());
+  }
+
+  function getScore() {
+    console.log("Getting Score:");
+    console.log(win);
+
+    if (win.winner === "#BB2222") {
+      redScore++;
+    } else if (win.winner === "#000000") {
+      blackScore++;
+    }
   }
 
   function getDomBoardCell(index) {
@@ -317,6 +332,10 @@ export default function ConnectFour() {
     return gridTemplateColumns;
   }
 
+  // if (win) {
+  //   redScore++;
+  // }
+
   return (
     <div>
       <div
@@ -331,15 +350,26 @@ export default function ConnectFour() {
         {createDropButtons()}
         {cells}
       </div>
+      {/* if win is null do this */}
       {!win && (
-        <h2 style={{ color: currentPlayer }}>
-          {currentPlayer === boardSettings.colors.p1
-            ? "RED's Turn"
-            : "BLACK's Turn"}
-        </h2>
+        <span className="infoDisplay">
+          <span>
+            <span className="redScore"> {redScore} </span>
+            <span className="scoreBreak">:</span>
+            <span className="blackScore"> {blackScore} </span>
+          </span>
+          <span style={{ color: currentPlayer }}>
+            {currentPlayer === boardSettings.colors.p1
+              ? "RED's Turn"
+              : "BLACK's Turn"}
+          </span>
+        </span>
       )}
+      {/* if winner is truthy do this */}
+
       {win && (
         <>
+          {/* <p>Winner winner chicken dinner</p> */}
           <h1 style={{ color: win.winner }}>
             {" "}
             {win.winner === boardSettings.colors.p1 ? "RED" : "BLACK"} WON!
@@ -347,7 +377,7 @@ export default function ConnectFour() {
           <button className="winButton" onClick={restartGame}>
             Play Again
           </button>
-          {/* <p>Winner winner chicken dinner</p> */}
+
           <br />
           <br />
         </>
